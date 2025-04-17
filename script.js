@@ -9,31 +9,51 @@ fetch('https://restcountries.com/v3.1/all')
     const sortedCountries = data.sort((a, b) => a.name.common.localeCompare(b.name.common));
     sortedCountries.forEach(country => {
       const option = document.createElement('option');
-      option.value = country.cca2;
+      option.value = country.name.common;
       option.textContent = country.name.common;
       countryDropdown.appendChild(option);
     });
   });
 
+// Step 2: Listen for country selection
 countryDropdown.addEventListener('change', () => {
-  const selected = countryDropdown.value;
-  fetchData(selected);
+  const selectedCountry = countryDropdown.value;
+  fetchData(selectedCountry);
 });
 
-function fetchData(countryCode) {
-  // Placeholder chart update
-  const dummyData = {
-    labels: ['Cases', 'Deaths', 'Recovered'],
-    datasets: [{
-      label: 'COVID Stats',
-      data: [Math.random()*100000, Math.random()*50000, Math.random()*70000],
-      backgroundColor: ['#1E3A8A', '#f87171', '#34d399'],
-    }]
-  };
+// Step 3: Fetch real data from API
+function fetchData(countryName) {
+  fetch(`https://disease.sh/v3/covid-19/countries/${countryName}?strict=true`)
+    .then(res => res.json())
+    .then(data => {
+      const chartData = {
+        labels: ['Cases', 'Deaths', 'Recovered', 'Active', 'Critical'],
+        datasets: [{
+          label: `${countryName} COVID-19 Stats`,
+          data: [
+            data.cases,
+            data.deaths,
+            data.recovered,
+            data.active,
+            data.critical
+          ],
+          backgroundColor: [
+            '#1E3A8A',
+            '#f87171',
+            '#34d399',
+            '#facc15',
+            '#8b5cf6'
+          ]
+        }]
+      };
 
-  if (chart) chart.destroy();
-  chart = new Chart(chartCanvas, {
-    type: 'bar',
-    data: dummyData,
-  });
+      if (chart) chart.destroy();
+      chart = new Chart(chartCanvas, {
+        type: 'bar',
+        data: chartData
+      });
+    })
+    .catch(err => {
+      alert("Data not found for this country. Try another.");
+    });
 }
