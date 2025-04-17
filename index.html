@@ -5,39 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Global Health Tracker</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
     <h1>🌍 Global Health Tracker</h1>
-    <p>Select a country to view real-time data and tips</p>
+    <p>Track live COVID-19 stats with style</p>
+    <button id="themeToggle">🌙 Toggle Theme</button>
   </header>
 
   <main>
-    <section id="controls">
-      <label for="country">Choose Country:</label>
-      <select id="country"></select>
-    </section>
-
-    <section id="stats">
-      <canvas id="healthChart"></canvas>
-    </section>
-
-    <section id="tips">
-      <h2>🩺 Prevention Tips</h2>
-      <ul>
-        <li>Wash your hands regularly</li>
-        <li>Avoid close contact with sick people</li>
-        <li>Stay home if you feel unwell</li>
-        <li>Disinfect surfaces daily</li>
-      </ul>
-    </section>
+    <label for="countrySelect">Choose a country:</label>
+    <select id="countrySelect"></select>
+    <img id="flag" width="50" style="display: block; margin-top: 10px;" />
+    <div id="loader" style="display: none;">Loading data...</div>
+    <canvas id="chart"></canvas>
+    <p id="updatedTime"></p>
   </main>
 
   <footer>
-    <p>© 2025 Hatim Feroz Khan. All rights reserved.</p>
+    <p>Made with 💻 by Hatim</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
