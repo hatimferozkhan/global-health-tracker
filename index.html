@@ -1,35 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Global Health Tracker with Pandemic Forecasting</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🌍 Global Health Tracker + AI Forecast</title>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- TensorFlow.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Flag CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
+
+  <!-- Font & CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="theme-toggle">
+    <label>
+      🌞
+      <input type="checkbox" id="themeSwitch">
+      🌙
+    </label>
+  </div>
+
   <div class="container">
-    <h1>Global Health Tracker with Pandemic Forecasting</h1>
-    
-    <section>
-      <h2>Select a Country</h2>
-      <select id="countrySelect">
-        <!-- Country options will be dynamically populated -->
-      </select>
-      <button onclick="fetchData()">Get Data</button>
-      <div id="loadingSpinner" class="spinner">Loading...</div>
+    <header>
+      <h1>🌍 Global Health Tracker <span class="highlight">+ AI Forecast</span></h1>
+      <p>Track live health stats and see AI-based predictions for the future.</p>
+    </header>
+
+    <section class="controls">
+      <label for="countrySelect">Choose a Country:</label>
+      <select id="countrySelect"></select>
+      <button onclick="fetchData()">🔍 Fetch Data</button>
+      <div id="loadingSpinner" class="spinner">⏳ Loading...</div>
     </section>
 
-    <section>
-      <h2>COVID-19 Cases in <span id="countryName">Select a Country</span></h2>
-      <div id="lastUpdated">Last updated: --</div>
+    <section class="data-display">
+      <h2><span id="flagIcon"></span> <span id="countryName">Country</span></h2>
+      <div id="lastUpdated">Last Updated: <span id="updateTime">--</span></div>
       <canvas id="chart"></canvas>
     </section>
 
-    <section>
-      <h2>Forecast for Next 7 Days</h2>
+    <section class="forecast">
+      <h2>📈 Forecast for Next 7 Days</h2>
       <canvas id="forecastChart"></canvas>
     </section>
+
+    <footer>
+      <p>Built with 💡 by Hatim — Powered by Chart.js & TensorFlow.js</p>
+    </footer>
   </div>
 
   <script src="script.js"></script>
