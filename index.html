@@ -3,58 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌍 Global Health Tracker + AI Forecast</title>
-
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- TensorFlow.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-
-  <!-- Flag CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
-
-  <!-- Font & CSS -->
+  <title>🌍 Global Health Tracker</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Favicon (optional) -->
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2807/2807508.png">
 </head>
 <body>
-  <div class="theme-toggle">
-    <label>
-      🌞
-      <input type="checkbox" id="themeSwitch">
-      🌙
+  <header>
+    <h1>🌍 Global Health Tracker</h1>
+    <label class="theme-switch">
+      <input type="checkbox" id="themeSwitch" />
+      <span class="slider"></span>
     </label>
-  </div>
+  </header>
 
-  <div class="container">
-    <header>
-      <h1>🌍 Global Health Tracker <span class="highlight">+ AI Forecast</span></h1>
-      <p>Track live health stats and see AI-based predictions for the future.</p>
-    </header>
+  <main>
+    <div class="controls">
+      <select id="countrySelect">
+        <option value="">Select a Country</option>
+        <!-- Most Popular Countries -->
+        <option value="USA">🇺🇸 United States</option>
+        <option value="Pakistan">🇵🇰 Pakistan</option>
+        <option value="India">🇮🇳 India</option>
+        <option value="UK">🇬🇧 United Kingdom</option>
+        <option value="Canada">🇨🇦 Canada</option>
+        <option value="Germany">🇩🇪 Germany</option>
+        <option value="Brazil">🇧🇷 Brazil</option>
+        <option value="Australia">🇦🇺 Australia</option>
+        <option value="Japan">🇯🇵 Japan</option>
+        <option value="South Africa">🇿🇦 South Africa</option>
+        <!-- Add more as needed -->
+      </select>
+      <button id="fetchDataBtn">Fetch Data</button>
+      <span id="spinner" class="spinner" style="display: none;"></span>
+    </div>
 
-    <section class="controls">
-      <label for="countrySelect">Choose a Country:</label>
-      <select id="countrySelect"></select>
-      <button onclick="fetchData()">🔍 Fetch Data</button>
-      <div id="loadingSpinner" class="spinner">⏳ Loading...</div>
+    <section class="info-panel">
+      <h2>
+        <span id="flagIcon"></span> 
+        <span id="countryName">Country</span>
+      </h2>
+      <p id="lastUpdated">Last Updated: --</p>
     </section>
 
-    <section class="data-display">
-      <h2><span id="flagIcon"></span> <span id="countryName">Country</span></h2>
-      <div id="lastUpdated">Last Updated: <span id="updateTime">--</span></div>
-      <canvas id="chart"></canvas>
+    <section class="chart-section">
+      <canvas id="dataChart" width="600" height="300"></canvas>
     </section>
 
-    <section class="forecast">
-      <h2>📈 Forecast for Next 7 Days</h2>
-      <canvas id="forecastChart"></canvas>
+    <section class="forecast" id="forecastContainer">
+      <!-- Forecast Results Appear Here -->
     </section>
+  </main>
 
-    <footer>
-      <p>Built with 💡 by Hatim — Powered by Chart.js & TensorFlow.js</p>
-    </footer>
-  </div>
+  <footer>
+    <p>Built with ❤️ by [Your Name] — Powered by Chart.js & TensorFlow.js</p>
+  </footer>
 
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   <script src="script.js"></script>
 </body>
 </html>
