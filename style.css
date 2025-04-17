@@ -1,79 +1,182 @@
-/* Base styles */
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #ffffff;
-  color: #333;
+/* Reset some basic styles */
+* {
   margin: 0;
   padding: 0;
-  text-align: center;
+  box-sizing: border-box;
 }
 
-h1, h2 {
-  color: #1e3a8a;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
   width: 90%;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem 0;
 }
 
-canvas {
-  max-width: 100%;
-  margin: 20px 0;
-}
-
-section {
-  padding: 40px 0;
+header {
   text-align: center;
+  margin-bottom: 2rem;
 }
 
-#chart, #forecastChart {
-  max-width: 900px;
-  margin: 0 auto;
+header h1 {
+  font-size: 2.5rem;
+  color: #1e3a8a;
+}
+
+.highlight {
+  color: #6b21a8;
+}
+
+header p {
+  margin-top: 0.5rem;
+  color: #555;
+}
+
+.controls {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.controls label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+#countrySelect {
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin-right: 1rem;
 }
 
 button {
+  padding: 0.5rem 1rem;
   background-color: #1e3a8a;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 16px;
+  color: white;
   border: none;
-  cursor: pointer;
   border-radius: 5px;
-  margin-top: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
   background-color: #3b82f6;
 }
 
-/* Animation */
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-section {
-  animation: fadeIn 2s ease-out;
-}
-
-/* Add some shadow to the charts */
-#chart, #forecastChart {
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 15px;
-  padding: 10px;
-}
-
 .spinner {
   display: none;
-  margin: 50px auto;
-  font-size: 20px;
-  font-weight: bold;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: #6b21a8;
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+
+.data-display {
+  margin-top: 2rem;
   text-align: center;
 }
 
+#flagIcon {
+  font-size: 2rem;
+  margin-right: 0.5rem;
+}
+
+#countryName {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
 #lastUpdated {
-  font-size: 14px;
-  color: #555;
-  margin-top: 10px;
+  margin-top: 0.5rem;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+canvas {
+  margin-top: 1.5rem;
+  max-width: 100%;
+}
+
+.forecast {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+footer {
+  margin-top: auto;
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #999;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  font-size: 1.2rem;
+}
+
+.theme-toggle input[type="checkbox"] {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* Dark Theme */
+body.dark {
+  background-color: #1a202c;
+  color: #e2e8f0;
+}
+
+body.dark header h1 {
+  color: #93c5fd;
+}
+
+body.dark .highlight {
+  color: #e9d5ff;
+}
+
+body.dark button {
+  background-color: #6b21a8;
+}
+
+body.dark button:hover {
+  background-color: #9333ea;
+}
+
+body.dark footer {
+  color: #cbd5e1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  button {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
