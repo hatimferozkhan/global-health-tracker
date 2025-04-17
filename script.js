@@ -1,137 +1,109 @@
-let forecastChart;
+const ctx = document.getElementById('dataChart').getContext('2d');
+let chart;
+const spinner = document.getElementById("spinner");
+const lastUpdated = document.getElementById("lastUpdated");
+const countryName = document.getElementById("countryName");
+const flagIcon = document.getElementById("flagIcon");
+const forecastContainer = document.getElementById("forecastContainer");
+const themeToggle = document.getElementById("themeSwitch");
 
-function fetchData() {
+document.getElementById('fetchDataBtn').addEventListener('click', () => {
   const country = document.getElementById('countrySelect').value;
-  const countryName = document.getElementById('countryName');
-  countryName.textContent = country;
-  showLoading();
+  if (country) {
+    fetchData(country);
+  }
+});
 
-  // Fetch current COVID-19 data for the selected country
-  fetch(`https://disease.sh/v3/covid-19/countries/${country}`)
-    .then(res => res.json())
-    .then(data => {
-      hideLoading();
-      updateLastUpdated();
+// Theme Toggle
+themeToggle.addEventListener("change", () => {
+  document.body.classList.toggle("dark");
+});
 
-      const cases = data.cases;
-      const deaths = data.deaths;
-      const recovered = data.recovered;
-      
-      // Create chart for current data
-      const ctx = document.getElementById('chart').getContext('2d');
-      new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['Cases', 'Deaths', 'Recovered'],
-          datasets: [{
-            label: 'COVID-19 Data',
-            data: [cases, deaths, recovered],
-            backgroundColor: ['#1e3a8a', '#e11d48', '#10b981'],
-          }]
+async function fetchData(country) {
+  spinner.style.display = "inline-block";
+  try {
+    const res = await fetch(`https://disease.sh/v3/covid-19/historical/${country}?lastdays=30`);
+    const json = await res.json();
+    const timeline = json.timeline || {};
+    const cases = timeline.cases || {};
+    const dates = Object.keys(cases);
+    const values = Object.values(cases);
+
+    // Update UI
+    countryName.textContent = json.country || country;
+    flagIcon.textContent = getFlagEmoji(json.country);
+    lastUpdated.textContent = "Last Updated: " + new Date().toLocaleString();
+
+    // Draw chart
+    drawChart(dates, values);
+
+    // Forecast
+    generateForecast(values);
+
+  } catch (error) {
+    alert("Error fetching data: " + error.message);
+  } finally {
+    spinner.style.display = "none";
+  }
+}
+
+function drawChart(labels, data) {
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Confirmed Cases',
+        data: data,
+        borderColor: '#6b21a8',
+        backgroundColor: 'rgba(107, 33, 168, 0.2)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: false
         }
-      });
-    });
+      }
+    }
+  });
 }
 
-function fetchHistoricalData(country) {
-  fetch(`https://disease.sh/v3/covid-19/historical/${country}?lastdays=30`)
-    .then(res => res.json())
-    .then(data => {
-      const timeline = data.timeline ? data.timeline : data; // Some responses vary
-      const cases = timeline.cases;
-
-      const dates = Object.keys(cases);
-      const values = Object.values(cases);
-
-      // Prepare data for ML
-      const historicalData = values.slice(1); // Remove the first day, it's not useful for prediction
-      const dateLabels = dates.slice(1);
-
-      // Normalize data (important for machine learning models)
-      const tensorData = tf.tensor2d(historicalData, [historicalData.length, 1]);
-
-      // Building a simple Linear Regression model using TensorFlow.js
-      const model = tf.sequential();
-      model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
-
-      model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
-
-      const xs = tf.linspace(0, historicalData.length - 1, historicalData.length);
-      const ys = tensorData;
-
-      model.fit(xs, ys, { epochs: 100 }).then(() => {
-        // Predict the next 7 days
-        const predictionX = tf.linspace(historicalData.length, historicalData.length + 6, 7);
-        model.predict(predictionX).array().then(forecastedData => {
-          const forecastDates = [];
-          const forecastValues = forecastedData.map(val => Math.round(val));
-
-          for (let i = 1; i <= 7; i++) {
-            forecastDates.push(`Day ${i}`);
-          }
-
-          // Prepare Actual vs Forecast data
-          const actualData = historicalData.map((val, i, arr) => i === 0 ? 0 : val - arr[i - 1]).slice(1);
-
-          if (forecastChart) forecastChart.destroy();
-          forecastChart = new Chart(document.getElementById('forecastChart'), {
-            type: 'line',
-            data: {
-              labels: [...dateLabels, ...forecastDates],
-              datasets: [
-                {
-                  label: 'Actual Daily Cases',
-                  data: actualData,
-                  borderColor: '#3b82f6',
-                  fill: false,
-                  tension: 0.3
-                },
-                {
-                  label: 'Forecasted Cases',
-                  data: [...Array(actualData.length).fill(null), ...forecastValues],
-                  borderColor: '#f43f5e',
-                  borderDash: [5, 5],
-                  fill: false,
-                  tension: 0.3
-                }
-              ]
-            }
-          });
-        });
-      });
-    });
+// Convert country name to flag emoji
+function getFlagEmoji(countryName) {
+  const code = countryName.slice(0, 2).toUpperCase();
+  return String.fromCodePoint(...[...code].map(c => 127397 + c.charCodeAt()));
 }
 
-// Fetching all country names dynamically
-function loadCountryOptions() {
-  fetch('https://disease.sh/v3/covid-19/countries')
-    .then(res => res.json())
-    .then(countries => {
-      const countrySelect = document.getElementById('countrySelect');
-      countries.forEach(country => {
-        const option = document.createElement('option');
-        option.value = country.countryInfo.iso2;
-        option.textContent = country.country;
-        countrySelect.appendChild(option);
-      });
-      // Default to first country in the list
-      countrySelect.value = countries[0].countryInfo.iso2;
-      fetchData();
-      fetchHistoricalData(countries[0].countryInfo.iso2);
-    });
+// AI Forecast (simple linear model using TensorFlow.js)
+async function generateForecast(data) {
+  const tfData = data.map((val, i) => ({ x: i, y: val }));
+  const xs = tf.tensor1d(tfData.map(p => p.x));
+  const ys = tf.tensor1d(tfData.map(p => p.y));
+
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+  model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
+
+  await model.fit(xs, ys, { epochs: 100 });
+
+  const future = [30, 31, 32, 33, 34];
+  const preds = model.predict(tf.tensor1d(future)).arraySync();
+
+  forecastContainer.innerHTML = `
+    <h3>📈 5-Day Forecast</h3>
+    <ul>
+      ${future.map((day, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        return `<li>${date.toDateString()}: <strong>${Math.round(preds[i])}</strong> cases</li>`;
+      }).join("")}
+    </ul>
+  `;
 }
-
-function showLoading() {
-  document.getElementById('loadingSpinner').style.display = 'block';
-}
-
-function hideLoading() {
-  document.getElementById('loadingSpinner').style.display = 'none';
-}
-
-function updateLastUpdated() {
-  document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString()}`;
-}
-
-loadCountryOptions();
-
