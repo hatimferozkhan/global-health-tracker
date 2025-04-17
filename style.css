@@ -1,43 +1,79 @@
+/* Base styles */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: white;
-  color: #1f2937;
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  margin: 0;
+  padding: 0;
   text-align: center;
-  padding: 20px;
-  transition: all 0.3s ease-in-out;
 }
 
-header {
-  margin-bottom: 20px;
+h1, h2 {
+  color: #1e3a8a;
 }
 
-select, button {
-  padding: 10px;
-  font-size: 1em;
-  margin: 10px;
+.container {
+  width: 90%;
+  margin: 0 auto;
 }
 
-#chart {
-  max-width: 600px;
-  margin: 20px auto;
+canvas {
+  max-width: 100%;
+  margin: 20px 0;
 }
 
-footer {
-  margin-top: 40px;
-  font-size: 0.9em;
-  color: gray;
+section {
+  padding: 40px 0;
+  text-align: center;
 }
 
-/* Dark Mode */
-body.dark-mode {
-  background-color: #121212;
-  color: #f3f3f3;
+#chart, #forecastChart {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.dark-mode select,
-.dark-mode canvas,
-.dark-mode button {
-  background-color: #333;
+button {
+  background-color: #1e3a8a;
   color: #fff;
-  border: 1px solid #555;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #3b82f6;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+section {
+  animation: fadeIn 2s ease-out;
+}
+
+/* Add some shadow to the charts */
+#chart, #forecastChart {
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.spinner {
+  display: none;
+  margin: 50px auto;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#lastUpdated {
+  font-size: 14px;
+  color: #555;
+  margin-top: 10px;
 }
