@@ -1,182 +1,180 @@
-/* Reset some basic styles */
+/* ========== Global Styles ========== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9f9f9;
-  color: #333;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.3s, color 0.3s;
+  background-color: #ffffff;
+  color: #1e293b;
+  transition: background-color 0.4s, color 0.4s;
+  line-height: 1.6;
+  padding-top: 70px;
 }
 
+body.dark-mode {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+/* ========== Navigation ========== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #1e3a8a;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav h1 {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+nav .theme-toggle {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  color: #ffffff;
+  transition: transform 0.3s;
+}
+
+nav .theme-toggle:hover {
+  transform: rotate(20deg);
+}
+
+/* ========== Container ========== */
 .container {
-  width: 90%;
+  padding: 2rem;
   max-width: 1200px;
   margin: auto;
-  padding: 2rem 0;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-header h1 {
-  font-size: 2.5rem;
+h2.section-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  border-left: 5px solid #1e3a8a;
+  padding-left: 1rem;
   color: #1e3a8a;
 }
 
-.highlight {
-  color: #6b21a8;
-}
-
-header p {
-  margin-top: 0.5rem;
-  color: #555;
-}
-
-.controls {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.controls label {
-  font-weight: bold;
-  margin-right: 0.5rem;
-}
-
-#countrySelect {
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin-right: 1rem;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  background-color: #1e3a8a;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #3b82f6;
+/* ========== Loader ========== */
+#loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
 }
 
 .spinner {
-  display: none;
-  margin-top: 1rem;
-  font-size: 1.2rem;
-  color: #6b21a8;
-  animation: spin 1s infinite linear;
+  border: 6px solid #eee;
+  border-top: 6px solid #1e3a8a;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg);}
-  100% { transform: rotate(360deg);}
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.data-display {
+/* ========== Stats Section ========== */
+#stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.country-card {
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 10px;
+  flex: 1 1 300px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s, background 0.3s;
+  position: relative;
+}
+
+.country-card:hover {
+  transform: translateY(-4px);
+  background: #e0f2fe;
+}
+
+body.dark-mode .country-card {
+  background: #1e293b;
+}
+
+.flag {
+  width: 30px;
+  height: 20px;
+  border-radius: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ========== Chart Section ========== */
+#forecastChart {
   margin-top: 2rem;
-  text-align: center;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
-#flagIcon {
-  font-size: 2rem;
-  margin-right: 0.5rem;
+body.dark-mode #forecastChart {
+  background: #1e293b;
 }
 
-#countryName {
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
+/* ========== Last Updated Text ========== */
 #lastUpdated {
-  margin-top: 0.5rem;
-  color: #777;
   font-size: 0.9rem;
+  margin-top: 1rem;
+  color: #64748b;
 }
 
-canvas {
-  margin-top: 1.5rem;
-  max-width: 100%;
-}
-
-.forecast {
-  margin-top: 4rem;
-  text-align: center;
-}
-
-footer {
-  margin-top: auto;
-  padding: 1rem 0;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #999;
-}
-
-/* Theme Toggle */
-.theme-toggle {
-  position: fixed;
-  top: 10px;
-  right: 20px;
-  font-size: 1.2rem;
-}
-
-.theme-toggle input[type="checkbox"] {
-  margin-left: 5px;
-  cursor: pointer;
-}
-
-/* Dark Theme */
-body.dark {
-  background-color: #1a202c;
-  color: #e2e8f0;
-}
-
-body.dark header h1 {
-  color: #93c5fd;
-}
-
-body.dark .highlight {
-  color: #e9d5ff;
-}
-
-body.dark button {
-  background-color: #6b21a8;
-}
-
-body.dark button:hover {
-  background-color: #9333ea;
-}
-
-body.dark footer {
+body.dark-mode #lastUpdated {
   color: #cbd5e1;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  header h1 {
-    font-size: 2rem;
-  }
-  
-  button {
-    width: 100%;
-    margin-top: 1rem;
-  }
-  
-  .controls {
-    display: flex;
+/* ========== Footer ========== */
+footer {
+  margin-top: 4rem;
+  padding: 1.5rem;
+  text-align: center;
+  background-color: #1e3a8a;
+  color: white;
+  font-size: 0.9rem;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  nav {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+  }
+
+  nav h1 {
+    font-size: 1.2rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  #stats {
+    flex-direction: column;
   }
 }
