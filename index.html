@@ -1,72 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Global Health Tracker</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Global Health Tracker with Pandemic Forecasting - Real-time data, insights, and future trends.">
+  <title>🌍 Global Health Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
-<body>
 
-  <header>
-    <nav class="navbar">
-      <div class="logo">🌍 Health Tracker</div>
-      <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#stats">Stats</a></li>
-        <li><a href="#forecast">Forecast</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><button id="themeToggle">🌙</button></li>
-      </ul>
-    </nav>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-container">
+      <h1 class="logo">🌍 Global Health Tracker</h1>
+      <nav class="nav">
+        <ul>
+          <li><a href="#tracker">Tracker</a></li>
+          <li><a href="#forecast">Forecast</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li>
+            <button id="themeToggle" title="Toggle Theme">🌓</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
-  <section class="hero" id="home" data-aos="fade-up">
-    <h1>Global Health Tracker</h1>
-    <p>Track, predict, and act — pandemic insights made simple.</p>
-  </section>
+  <!-- Loading Spinner -->
+  <div id="loader" class="loader">
+    <div class="spinner"></div>
+    <p>Loading data...</p>
+  </div>
 
-  <main>
-    <section id="controls" data-aos="fade-up">
-      <input type="text" id="countrySearch" placeholder="Search for a country...">
-      <select id="countrySelect"></select>
-    </section>
+  <!-- Main Content -->
+  <main class="container">
+    <section class="section tracker-section" id="tracker">
+      <h2>📊 Real-time Health Statistics</h2>
 
-    <section id="stats" data-aos="fade-up">
-      <div class="card-container">
-        <div class="card"><h3>Confirmed</h3><p id="confirmed">...</p></div>
-        <div class="card"><h3>Recovered</h3><p id="recovered">...</p></div>
-        <div class="card"><h3>Deaths</h3><p id="deaths">...</p></div>
-        <div class="card"><h3>Last Updated</h3><p id="lastUpdated">...</p></div>
+      <!-- Country Selector -->
+      <div class="selector">
+        <label for="countrySelect">🌐 Choose a Country:</label>
+        <select id="countrySelect">
+          <option value="">Loading countries...</option>
+        </select>
+      </div>
+
+      <!-- Last Updated -->
+      <p class="last-updated" id="lastUpdated">Last Updated: --</p>
+
+      <!-- Stats Display -->
+      <div class="stats" id="stats">
+        <div class="card"><h3>Total Cases</h3><p id="totalCases">--</p></div>
+        <div class="card"><h3>Recovered</h3><p id="recovered">--</p></div>
+        <div class="card"><h3>Deaths</h3><p id="deaths">--</p></div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts">
+        <canvas id="historicalChart" height="100"></canvas>
       </div>
     </section>
 
-    <section id="chartContainer" data-aos="fade-up">
-      <canvas id="healthChart"></canvas>
+    <!-- Forecasting -->
+    <section class="section forecast-section" id="forecast">
+      <h2>📈 Forecasting & Future Trends</h2>
+      <p>Predicted trends based on past data using ML simulation.</p>
+      <canvas id="forecastChart" height="100"></canvas>
     </section>
 
-    <section id="forecast" data-aos="fade-up">
-      <h2>📈 Forecasting</h2>
-      <p>Next 7-day trend based on current data</p>
-      <canvas id="forecastChart"></canvas>
+    <!-- Contact -->
+    <section class="section contact-section" id="contact">
+      <h2>📬 Contact</h2>
+      <form id="contactForm">
+        <input type="text" placeholder="Your Name" required />
+        <input type="email" placeholder="Your Email" required />
+        <textarea placeholder="Your Message" rows="4" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
     </section>
   </main>
 
-  <div class="loader" id="loader">Loading...</div>
-
-  <footer>
-    <p>&copy; 2025 Hatim Khan. Built with ❤️</p>
+  <!-- Footer -->
+  <footer class="footer">
+    <p>🌐 Built with ❤️ by Hatim | Data via Public APIs</p>
   </footer>
 
-  <script src="script.js"></script>
-  <script>
-    AOS.init();
-  </script>
+  <!-- JavaScript -->
+  <script src="script.js" defer></script>
 </body>
 </html>
