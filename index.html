@@ -1,67 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌍 Global Health Tracker</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- Favicon (optional) -->
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2807/2807508.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Health Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
+
   <header>
-    <h1>🌍 Global Health Tracker</h1>
-    <label class="theme-switch">
-      <input type="checkbox" id="themeSwitch" />
-      <span class="slider"></span>
-    </label>
+    <nav class="navbar">
+      <div class="logo">🌍 Health Tracker</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#stats">Stats</a></li>
+        <li><a href="#forecast">Forecast</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><button id="themeToggle">🌙</button></li>
+      </ul>
+    </nav>
   </header>
 
+  <section class="hero" id="home" data-aos="fade-up">
+    <h1>Global Health Tracker</h1>
+    <p>Track, predict, and act — pandemic insights made simple.</p>
+  </section>
+
   <main>
-    <div class="controls">
-      <select id="countrySelect">
-        <option value="">Select a Country</option>
-        <!-- Most Popular Countries -->
-        <option value="USA">🇺🇸 United States</option>
-        <option value="Pakistan">🇵🇰 Pakistan</option>
-        <option value="India">🇮🇳 India</option>
-        <option value="UK">🇬🇧 United Kingdom</option>
-        <option value="Canada">🇨🇦 Canada</option>
-        <option value="Germany">🇩🇪 Germany</option>
-        <option value="Brazil">🇧🇷 Brazil</option>
-        <option value="Australia">🇦🇺 Australia</option>
-        <option value="Japan">🇯🇵 Japan</option>
-        <option value="South Africa">🇿🇦 South Africa</option>
-        <!-- Add more as needed -->
-      </select>
-      <button id="fetchDataBtn">Fetch Data</button>
-      <span id="spinner" class="spinner" style="display: none;"></span>
-    </div>
-
-    <section class="info-panel">
-      <h2>
-        <span id="flagIcon"></span> 
-        <span id="countryName">Country</span>
-      </h2>
-      <p id="lastUpdated">Last Updated: --</p>
+    <section id="controls" data-aos="fade-up">
+      <input type="text" id="countrySearch" placeholder="Search for a country...">
+      <select id="countrySelect"></select>
     </section>
 
-    <section class="chart-section">
-      <canvas id="dataChart" width="600" height="300"></canvas>
+    <section id="stats" data-aos="fade-up">
+      <div class="card-container">
+        <div class="card"><h3>Confirmed</h3><p id="confirmed">...</p></div>
+        <div class="card"><h3>Recovered</h3><p id="recovered">...</p></div>
+        <div class="card"><h3>Deaths</h3><p id="deaths">...</p></div>
+        <div class="card"><h3>Last Updated</h3><p id="lastUpdated">...</p></div>
+      </div>
     </section>
 
-    <section class="forecast" id="forecastContainer">
-      <!-- Forecast Results Appear Here -->
+    <section id="chartContainer" data-aos="fade-up">
+      <canvas id="healthChart"></canvas>
+    </section>
+
+    <section id="forecast" data-aos="fade-up">
+      <h2>📈 Forecasting</h2>
+      <p>Next 7-day trend based on current data</p>
+      <canvas id="forecastChart"></canvas>
     </section>
   </main>
 
+  <div class="loader" id="loader">Loading...</div>
+
   <footer>
-    <p>Built with ❤️ by [Your Name] — Powered by Chart.js & TensorFlow.js</p>
+    <p>&copy; 2025 Hatim Khan. Built with ❤️</p>
   </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   <script src="script.js"></script>
+  <script>
+    AOS.init();
+  </script>
 </body>
 </html>
