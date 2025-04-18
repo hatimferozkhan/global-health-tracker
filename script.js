@@ -1,109 +1,104 @@
-const ctx = document.getElementById('dataChart').getContext('2d');
-let chart;
-const spinner = document.getElementById("spinner");
-const lastUpdated = document.getElementById("lastUpdated");
-const countryName = document.getElementById("countryName");
-const flagIcon = document.getElementById("flagIcon");
-const forecastContainer = document.getElementById("forecastContainer");
-const themeToggle = document.getElementById("themeSwitch");
+// Select elements
+const statsSection = document.getElementById("stats");
+const lastUpdatedText = document.getElementById("lastUpdated");
+const loader = document.getElementById("loader");
+const forecastChartElement = document.getElementById("forecastChart");
+const themeToggle = document.getElementById("themeToggle");
 
-document.getElementById('fetchDataBtn').addEventListener('click', () => {
-  const country = document.getElementById('countrySelect').value;
-  if (country) {
-    fetchData(country);
-  }
+// Enable dark/light mode toggle
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
 });
 
-// Theme Toggle
-themeToggle.addEventListener("change", () => {
-  document.body.classList.toggle("dark");
+// Show loader initially
+loader.style.display = "flex";
+forecastChartElement.style.display = "none";
+
+// Fetch data from APIs
+Promise.all([
+  fetch("https://disease.sh/v3/covid-19/countries").then(res => res.json()),
+  fetch("https://disease.sh/v3/covid-19/all").then(res => res.json()),
+])
+.then(([countriesData, globalData]) => {
+  loader.style.display = "none";
+  forecastChartElement.style.display = "block";
+  displayStats(countriesData);
+  renderForecastChart(globalData);
+  const now = new Date();
+  lastUpdatedText.textContent = `Last Updated: ${now.toLocaleString()}`;
+})
+.catch(err => {
+  console.error("Error fetching data:", err);
+  statsSection.innerHTML = `<p style="color: red;">Failed to load data. Please try again later.</p>`;
 });
 
-async function fetchData(country) {
-  spinner.style.display = "inline-block";
-  try {
-    const res = await fetch(`https://disease.sh/v3/covid-19/historical/${country}?lastdays=30`);
-    const json = await res.json();
-    const timeline = json.timeline || {};
-    const cases = timeline.cases || {};
-    const dates = Object.keys(cases);
-    const values = Object.values(cases);
+function displayStats(countries) {
+  statsSection.innerHTML = ""; // Clear before rendering
 
-    // Update UI
-    countryName.textContent = json.country || country;
-    flagIcon.textContent = getFlagEmoji(json.country);
-    lastUpdated.textContent = "Last Updated: " + new Date().toLocaleString();
+  countries.forEach(country => {
+    const card = document.createElement("div");
+    card.className = "country-card";
 
-    // Draw chart
-    drawChart(dates, values);
+    card.innerHTML = `
+      <h3>
+        <img class="flag" src="${country.countryInfo.flag}" alt="${country.country} Flag">
+        ${country.country}
+      </h3>
+      <p><strong>Cases:</strong> ${country.cases.toLocaleString()}</p>
+      <p><strong>Recovered:</strong> ${country.recovered.toLocaleString()}</p>
+      <p><strong>Deaths:</strong> ${country.deaths.toLocaleString()}</p>
+    `;
 
-    // Forecast
-    generateForecast(values);
-
-  } catch (error) {
-    alert("Error fetching data: " + error.message);
-  } finally {
-    spinner.style.display = "none";
-  }
+    statsSection.appendChild(card);
+  });
 }
 
-function drawChart(labels, data) {
-  if (chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: 'line',
+// Render forecasting chart
+function renderForecastChart(globalData) {
+  const days = 14;
+  const baseCases = globalData.cases;
+  const avgIncrease = 150000; // Simple assumption
+  const labels = [];
+  const predictions = [];
+
+  for (let i = 1; i <= days; i++) {
+    labels.push(`Day ${i}`);
+    predictions.push(baseCases + avgIncrease * i);
+  }
+
+  const ctx = document.getElementById("forecastChart").getContext("2d");
+  new Chart(ctx, {
+    type: "line",
     data: {
       labels: labels,
       datasets: [{
-        label: 'Confirmed Cases',
-        data: data,
-        borderColor: '#6b21a8',
-        backgroundColor: 'rgba(107, 33, 168, 0.2)',
-        fill: true,
-        tension: 0.4,
+        label: "Projected Cases (next 14 days)",
+        data: predictions,
+        backgroundColor: "rgba(30, 58, 138, 0.2)",
+        borderColor: "rgba(30, 58, 138, 1)",
+        borderWidth: 2,
         pointRadius: 3,
-        borderWidth: 2
+        tension: 0.3
       }]
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}`
+          }
+        }
+      },
       scales: {
         y: {
-          beginAtZero: false
+          beginAtZero: false,
+          ticks: {
+            callback: value => value.toLocaleString()
+          }
         }
       }
     }
   });
-}
-
-// Convert country name to flag emoji
-function getFlagEmoji(countryName) {
-  const code = countryName.slice(0, 2).toUpperCase();
-  return String.fromCodePoint(...[...code].map(c => 127397 + c.charCodeAt()));
-}
-
-// AI Forecast (simple linear model using TensorFlow.js)
-async function generateForecast(data) {
-  const tfData = data.map((val, i) => ({ x: i, y: val }));
-  const xs = tf.tensor1d(tfData.map(p => p.x));
-  const ys = tf.tensor1d(tfData.map(p => p.y));
-
-  const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
-  model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
-
-  await model.fit(xs, ys, { epochs: 100 });
-
-  const future = [30, 31, 32, 33, 34];
-  const preds = model.predict(tf.tensor1d(future)).arraySync();
-
-  forecastContainer.innerHTML = `
-    <h3>📈 5-Day Forecast</h3>
-    <ul>
-      ${future.map((day, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() + i);
-        return `<li>${date.toDateString()}: <strong>${Math.round(preds[i])}</strong> cases</li>`;
-      }).join("")}
-    </ul>
-  `;
 }
